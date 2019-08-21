@@ -9,6 +9,11 @@ SELECT * FROM [Customers] where PostalCode = 1010;
 SELECT Phone FROM [Suppliers] where SupplierID = 11;
 
 ## List first 10 orders ever places, descending by the order date
+> List first 10 orders placed, sorted descending by the order date. The order with date 1997-02-12 should be at the top.
+
+SELECT * FROM [Orders] 
+ORDER BY OrderDate DESC
+LIMIT 10;
 
 ## Find all customers that live in London, Madrid, or Brazil
 
