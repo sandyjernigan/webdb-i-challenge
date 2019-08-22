@@ -3,7 +3,34 @@ const express = require('express');
 // database access using knex
 const db = require('../data/dbConfig.js');
 
+// Router
 const router = express.Router();
+
+//#region - CREATE 
+
+// Creates resource using the information sent inside the request body.
+router.post('/', validateInput, async (req, res, next) => {
+  try {
+    const insertResults = await db('accounts').insert(req.body);
+
+    // check that the resource was added
+    if (insertResults) {
+      try {
+        const results = await db('accounts').where('id', insertResults[0]);
+        res.status(201).json(results); // return HTTP status code 201 (Created)
+      } catch (error) {
+        console.log(error);
+        next({ code: 404, message: "Added with no return." });
+      }
+    } else {
+      next({ code: 404, message: "There was an error while saving the information." });
+    }
+  } catch (error) {
+    console.log(error);
+    next({ code: 500 });
+  }
+});
+//#endregion
 
 //#region - READ
 
@@ -15,7 +42,7 @@ router.get('/', async (req, res) => {
     res.status(200).json(results);
   } catch (error) {
     console.log(error);
-    next({ code: 500, message: "The information could not be retrieved." });
+    next({ code: 500 });
   }
 });
 
@@ -44,7 +71,17 @@ async function validateById(req, res, next) {
   } catch (error) {
     // If there's an error in retrieving results from the database:
     console.log(error);
-    next({ code: 500, message: "The information could not be retrieved." });
+    next({ code: 500 });
+  }
+};
+
+function validateInput(req, res, next) {
+  const { body } = req
+  if (body) {
+    req.body = body;
+    next();
+  } else {
+      next({ code: 400, message: "Request is missing data." });
   }
 };
 
