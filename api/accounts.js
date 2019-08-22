@@ -81,6 +81,29 @@ router.put('/:id', validateById, async (req, res, next) => {
 });
 //#endregion
 
+//#region - DELETE 
+
+// Deletes request by ID
+router.delete('/:id', validateById, async (req, res, next) => {
+  const { id } = req.params
+  try {
+    const deleteResults = await db('accounts').where({ id }).del();
+
+    if (deleteResults === 1) {
+      res.status(200).json({ message: 'Delete project was successful.' });
+    } else if (deleteResults > 1) {
+      next({ code: 404, message: `More than one project was removed. ${deleteResults} were removed.` });
+    } else {
+      next({ code: 404, message: "The project with the specified ID could not be removed. Check the ID." });
+    }
+  } catch (error) {
+    // log error to database
+    console.log(error);
+    next({ code: 500, message: "The project could not be removed." });
+  }
+});
+//#endregion
+
 //#region - Custom Middleware
 
 async function validateById(req, res, next) {
