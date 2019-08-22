@@ -53,6 +53,34 @@ router.get('/:id', validateById, (req, res, next) => {
 
 //#endregion
 
+//#region - UPDATE 
+
+// Updates the specified id using data from the request body. Returns the modified document, NOT the original.
+router.put('/:id', validateById, async (req, res, next) => {
+  const { id } = req.params
+
+  try {
+    const updateResults = await db('accounts').where({ id }).update(req.body);
+
+    if (updateResults) {
+      try {
+        const results = await db('accounts').where({ id });
+        res.status(200).json(results); // return HTTP status code 201 (Created)
+      } catch (error) {
+        console.log(error);
+        next({ code: 404, message: "Updated with no return." });
+      }
+    } else {
+      next({ code: 404, message: "The project could not be found." });
+    }
+  } catch (error) {
+    // If there's an error when updating the post:
+    console.log(error);
+    next({ code: 500, message: "The project information could not be modified." });
+  }
+});
+//#endregion
+
 //#region - Custom Middleware
 
 async function validateById(req, res, next) {
