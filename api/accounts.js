@@ -19,6 +19,34 @@ router.get('/', async (req, res) => {
   }
 });
 
+// Read by ID - Returns results for the specified id.
+router.get('/:id', validateById, (req, res, next) => {
+  res.status(200).json(req.results);
+});
+
+//#endregion
+
+//#region - Custom Middleware
+
+async function validateById(req, res, next) {
+  const { id } = req.params
+  try {
+    // SELECT * FROM accounts WHERE id = req.params.id
+    const results = await db('accounts').where({ id });
+
+    // If object for the specified id is not found:
+    if (!results || Object.keys(results).length === 0) {
+      next({ code: 400, message: `Invalid Results for ID: ${id}`});
+    } else {
+      req.results = results;
+      next();
+    }
+  } catch (error) {
+    // If there's an error in retrieving results from the database:
+    console.log(error);
+    next({ code: 500, message: "The information could not be retrieved." });
+  }
+};
 
 //#endregion
 
