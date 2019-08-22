@@ -5,6 +5,9 @@ const db = require('../data/dbConfig.js');
 
 const router = express.Router();
 
+//#region - READ
+
+// Read All - Returns an array of all accounts
 router.get('/', async (req, res) => {
   try {
     // SELECT * FROM accounts;
@@ -16,20 +19,7 @@ router.get('/', async (req, res) => {
   }
 });
 
-router.get('/:id', (req, res) => {
 
-});
-
-router.post('/', (req, res) => {
-
-});
-
-router.put('/:id', (req, res) => {
-
-});
-
-router.delete('/:id', (req, res) => {
-
-});
+//#endregion
 
 module.exports = router;

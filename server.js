@@ -5,7 +5,7 @@ const server = express();
 server.use(express.json());
 
 // Routers
-const ApiRouter = require('./api/api.js');
+const ApiRouter = require('./api/accounts.js');
 server.use('/api/accounts', ApiRouter);
 
 // Base Folder
